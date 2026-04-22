@@ -11,7 +11,7 @@
     {
       "binding": "DB",
       "database_name": "prediction-signal-radar",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "0843e893-bc5a-470c-8277-7bc0ffd5e621"
     }
   ]
 }
