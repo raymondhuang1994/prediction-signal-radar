@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>市场热点参考｜Polymarket 展示版</title>
+  <style>
+    :root {
+      --bg: #09111f; --panel: rgba(17,27,47,.94); --panel-2: #17233e; --line: #2a3a62;
+      --text: #edf3ff; --muted: #9fb3d8; --accent: #7fb2ff; --good: #35c48b; --chip: #203154;
+      --shadow: 0 18px 50px rgba(0,0,0,.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, rgba(92,141,255,.14), transparent 24%), linear-gradient(180deg, #08101c 0%, #0c1630 100%);
+    }
+    .wrap { max-width: 1380px; margin: 0 auto; padding: 24px; }
+    .card, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    .hero { display: grid; grid-template-columns: 1.18fr .82fr; gap: 18px; margin-bottom: 18px; }
+    .card { padding: 26px; }
+    h1 { margin: 0 0 12px; font-size: 32px; line-height: 1.2; }
+    h2 { margin: 0 0 14px; font-size: 20px; }
+    p { margin: 0; line-height: 1.75; color: var(--muted); }
+    .lead { font-size: 15px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .chip { padding: 7px 12px; border-radius: 999px; background: var(--chip); border: 1px solid var(--line); color: #d7e4ff; font-size: 12px; }
+    .note { margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: rgba(127,178,255,.08); border: 1px solid rgba(127,178,255,.22); color: #d9e8ff; font-size: 13px; line-height: 1.75; }
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; height: 100%; }
+    .stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+    .stat .label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .stat .value { font-size: 24px; font-weight: 750; }
+    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+    .quick-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+    .tag { display: inline-flex; padding: 4px 9px; border-radius: 999px; background: rgba(127,178,255,.14); color: var(--accent); font-size: 12px; margin-bottom: 10px; }
+    .headline { font-weight: 720; line-height: 1.5; margin-bottom: 8px; }
+    .body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; align-items: center; }
+    .toolbar button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 12px; padding: 10px 14px; cursor: pointer; font-weight: 650; }
+    .toolbar button.active, .toolbar button:hover { background: var(--chip); }
+    .grid { display: grid; grid-template-columns: 1.35fr .95fr; gap: 18px; align-items: start; }
+    .panel { padding: 18px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 980px; }
+    th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(95,120,170,.28); vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 10px; font-size: 12px; border: 1px solid var(--line); background: var(--chip); }
+    .title { font-weight: 720; line-height: 1.48; margin-bottom: 6px; }
+    .en { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .metric { display: inline-flex; padding: 5px 9px; border-radius: 10px; background: rgba(127,178,255,.14); color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+    .prob { display: inline-flex; padding: 5px 9px; border-radius: 10px; background: rgba(53,196,139,.14); color: var(--good); font-weight: 700; margin-bottom: 8px; }
+    .sub { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .links a { color: var(--text); text-decoration: none; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; background: #101a33; font-size: 12px; }
+    .box-list { display: grid; gap: 12px; }
+    .box { background: var(--panel-2); border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
+    .box .headline { font-weight: 720; margin-bottom: 8px; }
+    .box .body { font-size: 13px; color: var(--muted); line-height: 1.75; }
+    .footer { margin-top: 18px; font-size: 12px; color: var(--muted); line-height: 1.85; }
+    @media (max-width: 1100px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .quick-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .quick-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card">
+        <h1>市场热点参考</h1>
+        <p class="lead">围绕黄金、利率、港美科技 / AI、数字资产四类重点主题，整理 Polymarket 上更值得浏览的公开市场话题，帮助更快把握当前市场关注点。</p>
+        <div class="chips">
+          <span class="chip">展示版</span>
+          <span class="chip">只读参考</span>
+          <span class="chip">重点主题聚合</span>
+          <span class="chip">自动同步最新信息</span>
+        </div>
+        <div class="note" id="noteText">页面会优先读取 `/api/front/*` 的动态数据；若接口暂不可用，则自动回退到内置示例数据。</div>
+      </div>
+      <div class="card">
+        <div class="stats">
+          <div class="stat"><div class="label">本页重点主题</div><div class="value" id="themeCount">-</div></div>
+          <div class="stat"><div class="label">精选热点话题</div><div class="value" id="itemCount">-</div></div>
+          <div class="stat"><div class="label">最高样本成交额</div><div class="value" id="maxVolume">-</div></div>
+          <div class="stat"><div class="label">最近同步</div><div class="value" id="lastSync">-</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick-grid" id="quickGrid">
+      <div class="quick-card"><div class="body">正在加载页面内容…</div></div>
+    </section>
+
+    <div class="toolbar" id="toolbar"></div>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>重点市场观察</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>主题方向</th>
+                <th>市场话题</th>
+                <th>当前概率参考</th>
+                <th>热度参考</th>
+                <th>页面定位</th>
+                <th>可关注什么</th>
+              </tr>
+            </thead>
+            <tbody id="marketTable">
+              <tr><td colspan="6" class="sub">正在加载数据…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h2>快速阅读</h2>
+        <div class="box-list" id="ideaList">
+          <div class="box"><div class="body">正在加载内容…</div></div>
+        </div>
+        <div class="box">
+          <div class="headline">阅读提示</div>
+          <div class="body">先看主题，再看当前概率和市场热度，最后看“可关注什么”。这样更容易把热点话题转化为可读的观察框架。</div>
+        </div>
+        <div class="box">
+          <div class="headline">风险提示</div>
+          <div class="body">预测市场价格会随信息变化而快速调整，页面展示内容仅反映整理时点的公开市场情况，不代表未来表现，也不构成任何投资建议。</div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="footer">本页采用更适合展示的页面结构：首屏看点 + 主题筛选 + 热点表格 + 补充阅读，适合放在首页或主题页使用。</div>
+  </div>
+
+  <script>
+    const fallbackMarkets = [{"slug": "how-many-fed-rate-cuts-in-2026", "title": "How many Fed rate cuts in 2026?", "platform": "Polymarket", "product": "利率与风险偏好", "theme": "rates", "note": "利率预期通常会同时影响成长风格、黄金和美元相关资产。", "marketUrl": "https://polymarket.com/event/how-many-fed-rate-cuts-in-2026", "volume24h": 20000000, "liquidity": 500000, "yesPrice": 0.33, "noPrice": 0.67, "endDate": "2026-12-31T00:00:00Z", "updatedAt": "2026-04-22T09:00:00Z", "watchText": "适合放在宏观框架里理解。"}, {"slug": "largest-company-end-of-april-738", "title": "Largest Company end of April?", "platform": "Polymarket", "product": "港美科技 / AI", "theme": "ai", "note": "龙头公司话题可读性高，容易和科技主题联系起来。", "marketUrl": "https://polymarket.com/event/largest-company-end-of-april-738", "volume24h": 13000000, "liquidity": 280000, "yesPrice": 0.99, "noPrice": 0.01, "endDate": "2026-04-30T00:00:00Z", "updatedAt": "2026-04-22T09:00:00Z", "watchText": "适合放在首屏做快速理解。"}, {"slug": "gc-over-under-jun-2026", "title": "Gold (GC) above ___ end of June?", "platform": "Polymarket", "product": "黄金主题", "theme": "gold", "note": "关键价位问题更直观，适合放在首屏做快速理解。", "marketUrl": "https://polymarket.com/event/gc-over-under-jun-2026", "volume24h": 920000, "liquidity": 310000, "yesPrice": 0.59, "noPrice": 0.41, "endDate": "2026-06-30T00:00:00Z", "updatedAt": "2026-04-22T09:00:00Z", "watchText": "适合做关键价位观察。"}, {"slug": "what-price-will-bitcoin-hit-before-2027", "title": "What price will Bitcoin hit in 2026?", "platform": "Polymarket", "product": "数字资产主题", "theme": "crypto", "note": "高成交额话题适合观察整体风险偏好与主题热度。", "marketUrl": "https://polymarket.com/event/what-price-will-bitcoin-hit-before-2027", "volume24h": 32500000, "liquidity": 530000, "yesPrice": 1.0, "noPrice": 0.0, "endDate": "2026-12-31T00:00:00Z", "updatedAt": "2026-04-22T09:00:00Z", "watchText": "适合做数字资产主题入口。"}, {"slug": "ethereum-all-time-high-by", "title": "Ethereum all time high by ___?", "platform": "Polymarket", "product": "数字资产主题", "theme": "crypto", "note": "时间窗口型话题更适合观察中期预期。", "marketUrl": "https://polymarket.com/event/ethereum-all-time-high-by", "volume24h": 185000, "liquidity": 145000, "yesPrice": 0.17, "noPrice": 0.83, "endDate": "2026-12-31T00:00:00Z", "updatedAt": "2026-04-22T09:00:00Z", "watchText": "更适合看周期与中期预期。"}];
+    const fallbackIdeas = [{"headline": "黄金：先看关键区间，再看关键价位", "angle": "黄金相关话题更适合用区间和关键位来表达，这样更容易读懂，也更适合页面展示。"}, {"headline": "利率：把宏观路径放到资产方向里理解", "angle": "利率预期往往会同时影响成长风格、黄金和美元相关资产，适合作为宏观入口。"}, {"headline": "AI：优先展示高可读性的龙头话题", "angle": "像“最大市值公司是谁”这类问题一眼就能看懂，适合做科技主题入口。"}, {"headline": "数字资产：用高成交额话题观察整体风险偏好", "angle": "高成交额市场更适合做数字资产主题总入口，而中长期时间窗口问题更适合补充阅读。"}];
+    const fallbackStatus = {
+      source: 'fallback',
+      latestMarketSyncAt: '2026-04-22T09:00:00Z',
+      latestScoringAt: '2026-04-22T09:01:00Z'
+    };
+    const themeLabels = {"gold": "黄金", "rates": "利率 / 宏观", "ai": "港美科技 / AI", "crypto": "数字资产"};
+    let allMarkets = [];
+    let allIdeas = [];
+    let currentTheme = 'all';
+    let statusInfo = fallbackStatus;
+
+    function formatMoney(v) {
+      const n = Number(v || 0);
+      if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (n >= 1_000) return '$' + (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+      return '$' + n.toFixed(0);
+    }
+    function fmtPct(v) {
+      const n = Number(v);
+      if (Number.isNaN(n)) return '-';
+      return (n * 100).toFixed(0) + '%';
+    }
+    function fmtDate(s) {
+      if (!s) return '-';
+      const d = new Date(s);
+      if (Number.isNaN(d.getTime())) return String(s);
+      return d.toLocaleString('zh-CN', { hour12: false });
+    }
+    function pagePosition(item) {
+      if (item.theme === 'gold' || item.theme === 'rates') return '首屏热点';
+      if (item.theme === 'ai') return (item.slug || '').includes('largest-company') ? '首屏热点' : '补充阅读';
+      if (item.theme === 'crypto') return (item.slug || '').includes('bitcoin') ? '主题入口' : '补充阅读';
+      return '参考内容';
+    }
+
+    async function loadJson(url, fallback) {
+      try {
+        const res = await fetch(url, { headers: { accept: 'application/json' } });
+        if (!res.ok) throw new Error('bad response');
+        const data = await res.json();
+        return data;
+      } catch (err) {
+        return { ok: false, items: fallback };
+      }
+    }
+
+    function renderToolbar() {
+      const themes = ['all', ...new Set(allMarkets.map(m => m.theme).filter(Boolean))];
+      const labels = { all: '全部主题', ...themeLabels };
+      document.getElementById('toolbar').innerHTML = themes.map(theme => `
+        <button class="${theme === currentTheme ? 'active' : ''}" onclick="setTheme('${theme}')">${labels[theme] || theme}</button>
+      `).join('');
+    }
+
+    function renderStats() {
+      const themeCount = new Set(allMarkets.map(m => m.theme).filter(Boolean)).size;
+      const maxVol = allMarkets.length ? Math.max(...allMarkets.map(m => Number(m.volume24h || 0))) : 0;
+      document.getElementById('themeCount').textContent = themeCount || 0;
+      document.getElementById('itemCount').textContent = allMarkets.length || 0;
+      document.getElementById('maxVolume').textContent = formatMoney(maxVol);
+      document.getElementById('lastSync').textContent = fmtDate(statusInfo.latestMarketSyncAt || statusInfo.latestScoringAt);
+      document.getElementById('noteText').innerHTML =
+        statusInfo.source === 'live'
+          ? '当前页面已接入最新公开 API 数据。最近一次市场同步时间：' + fmtDate(statusInfo.latestMarketSyncAt) + '。'
+          : '当前页面正在使用内置示例数据进行展示。等 API、D1 和 Worker 接通后，这里会自动显示最近同步时间。';
+    }
+
+    function renderQuickCards() {
+      const byTheme = new Map();
+      allMarkets.slice().sort((a,b) => Number(b.volume24h||0) - Number(a.volume24h||0)).forEach(item => {
+        if (item.theme && !byTheme.has(item.theme)) byTheme.set(item.theme, item);
+      });
+      const cards = [...byTheme.values()].slice(0, 4);
+      document.getElementById('quickGrid').innerHTML = cards.map(item => `
+        <div class="quick-card">
+          <div class="tag">${themeLabels[item.theme] || item.theme}</div>
+          <div class="headline">${item.title}</div>
+          <div class="body">${item.note || item.watchText || '适合作为当前主题的热点观察内容。'}</div>
+        </div>
+      `).join('') || `<div class="quick-card"><div class="body">暂无可展示内容。</div></div>`;
+    }
+
+    function renderMarkets() {
+      const rows = allMarkets
+        .filter(m => currentTheme === 'all' || m.theme === currentTheme)
+        .sort((a,b) => Number(b.volume24h||0) - Number(a.volume24h||0))
+        .map(m => `
+          <tr>
+            <td><span class="pill">${themeLabels[m.theme] || m.theme || '-'}</span></td>
+            <td>
+              <div class="title">${m.title}</div>
+              <div class="en">${m.platform || 'Polymarket'}</div>
+            </td>
+            <td>
+              <div class="prob">Yes ${fmtPct(m.yesPrice)} · No ${fmtPct(m.noPrice)}</div>
+              <div class="sub">更新时间：${fmtDate(m.updatedAt || m.lastSyncedAt || statusInfo.latestMarketSyncAt)}</div>
+            </td>
+            <td>
+              <div class="metric">24h 成交：${formatMoney(m.volume24h)}</div>
+              <div class="sub">流动性：${formatMoney(m.liquidity)}<br/>到期：${m.endDate ? String(m.endDate).slice(0, 10) : '-'}</div>
+            </td>
+            <td>
+              <div class="metric">${pagePosition(m)}</div>
+              <div class="sub">${m.product || '主题观察'}</div>
+            </td>
+            <td>
+              <div class="sub">${m.note || m.watchText || '适合作为当前主题的补充阅读。'}</div>
+              <div class="links">
+                <a href="${m.marketUrl || '#'}" target="_blank" rel="noreferrer">查看原市场</a>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      document.getElementById('marketTable').innerHTML = rows || `<tr><td colspan="6" class="sub">暂无符合条件的话题。</td></tr>`;
+    }
+
+    function renderIdeas() {
+      document.getElementById('ideaList').innerHTML = allIdeas.map(i => `
+        <div class="box">
+          <div class="headline">${i.headline}</div>
+          <div class="body">${i.angle}</div>
+        </div>
+      `).join('') || `<div class="box"><div class="body">暂无补充内容。</div></div>`;
+    }
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      renderToolbar();
+      renderMarkets();
+    }
+
+    async function init() {
+      const marketRes = await loadJson('/api/front/markets?minRelevance=70&limit=20', fallbackMarkets);
+      const ideasRes = await loadJson('/api/front/ideas?limit=6', fallbackIdeas);
+      const statusRes = await loadJson('/api/front/status', []);
+      allMarkets = Array.isArray(marketRes.items) ? marketRes.items : fallbackMarkets;
+      allIdeas = Array.isArray(ideasRes.items) ? ideasRes.items : fallbackIdeas;
+      statusInfo = statusRes.ok ? statusRes : fallbackStatus;
+      renderStats();
+      renderToolbar();
+      renderQuickCards();
+      renderMarkets();
+      renderIdeas();
+    }
+
+    init();
+  </script>
+</body>
+</html>

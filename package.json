@@ -1,0 +1,15 @@
+{
+  "name": "prediction-signal-radar",
+  "private": true,
+  "version": "0.7.0",
+  "description": "Read-only Polymarket display page for GitHub + Cloudflare Pages + Workers + D1",
+  "scripts": {
+    "pages:dev": "wrangler pages dev .",
+    "worker:discovery:dev": "cd workers/discovery && wrangler dev",
+    "worker:scoring:dev": "cd workers/scoring && wrangler dev",
+    "test:polymarket": "node scripts/polymarket-smoke-test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "latest"
+  }
+}
