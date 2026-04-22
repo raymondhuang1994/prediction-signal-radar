@@ -1,0 +1,13 @@
+{
+  "min_relevance": 70,
+  "min_front_score": 72,
+  "weights": {
+    "relevance": 0.5,
+    "heat": 0.3,
+    "anomaly": 0.2
+  },
+  "notes": {
+    "purpose": "优先展示与重点资产方向关联度较高、且适合页面展示的话题。",
+    "guideline": "首屏先看主题、热度和当前概率，再看“可关注什么”。"
+  }
+}

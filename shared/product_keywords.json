@@ -1,0 +1,55 @@
+{
+  "黄金主题": {
+    "theme": "gold",
+    "keywords": [
+      "gold",
+      "gc",
+      "inflation",
+      "cpi",
+      "bullion",
+      "safe haven",
+      "real yields",
+      "tariffs"
+    ]
+  },
+  "利率与风险偏好": {
+    "theme": "rates",
+    "keywords": [
+      "fed",
+      "rate cuts",
+      "rates",
+      "inflation",
+      "cpi",
+      "recession",
+      "yields",
+      "treasury"
+    ]
+  },
+  "港美科技 / AI": {
+    "theme": "ai",
+    "keywords": [
+      "nvidia",
+      "ai",
+      "semiconductor",
+      "semis",
+      "nasdaq",
+      "largest company",
+      "tech",
+      "tsmc",
+      "hynix",
+      "samsung"
+    ]
+  },
+  "数字资产主题": {
+    "theme": "crypto",
+    "keywords": [
+      "bitcoin",
+      "btc",
+      "ethereum",
+      "eth",
+      "crypto",
+      "digital asset",
+      "stablecoin"
+    ]
+  }
+}
